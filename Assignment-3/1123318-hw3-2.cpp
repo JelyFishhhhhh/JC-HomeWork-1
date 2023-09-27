@@ -4,7 +4,7 @@ using namespace std;
 
 #define ll long long
 #define fastio ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
-#define M 10005
+#define M 100005
 
 // returns true if and only if hugeInt1 < hugeInt2
 bool isNegative( int hugeInt1[], int hugeInt2[], int size1, int size2 ){
@@ -40,30 +40,19 @@ void subtraction( int minuend[], int subtrahend[], int difference[],
    /* Minus & Borrow */
    for(ll i= 0; i< minuendSize; i++){
       
-      while(i> (subtrahendSize- 1)&& i< minuendSize){
-
-         difference[i]+= minuend[i];
-         if(difference[i]< 0){
-
-            difference[(i+ 1)]--;
-            difference[i]+= 10; 
-         }
-         i++;
-      }
-
       /* Minuend- Subtrahend */
       difference[i]+= (minuend[i]- subtrahend[i]);
       
       /* Borrow */
       if(difference[i]< 0){
 
-         difference[(i+ 1)]--;
          difference[i]+= 10;
+         difference[(i+ 1)]--;
       }
    }
 
    /* Refresh Difference Size */
-   while(differenceSize> 1&& !difference[differenceSize-1]){
+   while(differenceSize> 0&& !difference[differenceSize-1]){
       
       differenceSize--;
    }
