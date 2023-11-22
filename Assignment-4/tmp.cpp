@@ -205,7 +205,7 @@ void multiplication( int multiplicand[], int multiplier[], int &multiplicandSize
 void division( int dividend[], int divisor[], int quotient[], int remainder[],
                int dividendSize, int divisorSize, int &quotientSize, int &remainderSize )
 {
-    int buffer[200];                        // buffer init
+    int buffer[200]={};                        // buffer init
     int bufferSize;
     quotientSize=dividendSize-divisorSize;
     bufferSize=divisorSize+quotientSize;
