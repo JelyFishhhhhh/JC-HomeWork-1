@@ -26,16 +26,36 @@ void embeddedWords( string &dictionaryWord, string &inputtedWord ){
 
    ifstream dic("./Dictionary.txt");
    ofstream wds("./Words.txt");
-   string i;
-   while(dic>> i){
+   string sub;
+   while(dic>> sub){
 
-      wds<< i<< '\n';
+      if(isSubstring(sub, inputtedWord)){
+
+
+         wds<< sub<< '\n';
+      }
    }
    dic.close();
+   wds.close();
 }
 
 // returns true if and only if dictionaryWord is a substring of inputtedWord
 bool isSubstring( string &dictionaryWord, string &inputtedWord ){
 
-
+   for (int i = 0; i <= inputtedWord.size() - dictionaryWord.size(); i++) {
+      
+      int j;
+      for (j = 0; j < dictionaryWord.size(); j++) {
+         
+         if (inputtedWord[i + j] != dictionaryWord[j]) {
+            
+            break;
+         }
+      }
+      if (j == dictionaryWord.size()) {
+      
+         return true; // Return true if the entire dictionaryWord is found in inputtedWord
+      }
+   }
+   return false; // If the loop completes without finding the word
 }

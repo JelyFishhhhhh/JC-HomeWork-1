@@ -48,27 +48,28 @@ HugeInt HugeInt::compSquareRoot()
 
       while (low <= high)
       {
-         mid = (low + high) / 2;
-         squareRoot.integer[i] = mid;
+         // mid = (low + high) / 2;
+         squareRoot.integer[i] = (low + high) / 2;
          square = squareRoot.compSquare();
 
          if (this->equal(square))
          {
-            high = mid;
+            high = squareRoot.integer[i];
             break;
          }
          else if (this->less(square))
          {
-            high = mid - 1;
+            high = squareRoot.integer[i] - 1;
          }
          else
          {
-            low = mid + 1;
+            low = squareRoot.integer[i] + 1;
          }
       }
       squareRoot.integer[i] = high;
    }
 
+   delete[] square.integer;
    return squareRoot;
 }
 
