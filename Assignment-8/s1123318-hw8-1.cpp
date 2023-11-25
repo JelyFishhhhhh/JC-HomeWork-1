@@ -35,7 +35,7 @@ HugeInt HugeInt::compSquareRoot()
 {
    HugeInt squareRoot;
    HugeInt square;
-   square.size = size + 1;
+   square.size = size + 1;                                                                                                                                                                                                                                                                                                                                                                                              
    square.integer = new long long int[square.size]();
    squareRoot.size = (size + 1) / 2;
    squareRoot.integer = new long long int[squareRoot.size]();
