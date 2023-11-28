@@ -48,7 +48,7 @@ void decrement(vector<int> &hugeInt) {
 }
 
 void subtraction(vector<int> &minuend, vector<int> &subtrahend) {
-    for (size_t i = 0; i < minuend.size(); i++) {
+    for (int i = 0; i < minuend.size(); i++) {
         minuend[i] -= (i < subtrahend.size() ? subtrahend[i] : 0);
         if (minuend[i] < 0) {
             minuend[i] += 10;
@@ -90,24 +90,22 @@ void divideBy10(vector<int> &hugeInt) {
 }
 
 void division(vector<int> &dividend, const vector<int> &divisor, vector<int> &quotient, vector<int> &remainder) {
-    remainder = dividend;
+     remainder = dividend;
     quotient = vector<int>(dividend.size() - divisor.size() + 1, 0);
-    vector<int> buffer(divisor.size() + quotient.size(), 0);
-
-    for (size_t i = 0; i < buffer.size(); i++) {
+    vector<int>buffer(divisor.size() + quotient.size(), 0);
+    for (int i = 0; i < buffer.size(); i++) {
         if (i < quotient.size()) {
             buffer[i] = 0;
             continue;
         }
         buffer[i] = divisor[i - quotient.size()];
     }
-
     if (isLess(remainder, buffer)) {
         divideBy10(buffer);
-    } else {
+    }
+    else {
         quotient.push_back(0);
     }
-
     quotient = vector<int>(quotient.size(), 0);
     for (int i = quotient.size() - 1; i >= 0; i--) {
         while (!isLess(remainder, buffer)) {
@@ -119,8 +117,6 @@ void division(vector<int> &dividend, const vector<int> &divisor, vector<int> &qu
         }
         divideBy10(buffer);
     }
-
-    // Remove leading zeros in the quotient
     while (!quotient.empty() && quotient.back() == 0) {
         quotient.pop_back();
     }
