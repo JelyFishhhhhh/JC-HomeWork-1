@@ -24,18 +24,26 @@ int main()
 // prints all English words which are contiguous substrings of inputtedWord into a file
 void embeddedWords( string &dictionaryWord, string &inputtedWord ){
 
-   ifstream dic("./Dictionary.txt");
-   ofstream wds("./Words.txt");
-   string sub;
+   // setting files
+
+   ifstream dic("./Dictionary.txt", ios::in);   // input file
+   if(!dic){                                    // exception if file not found
+
+      cout<< "File not Founded.\n";
+      return;
+   }
+   ofstream wds("./Words.txt", ios::out);       // output file
+   string sub;                                  // for buffer
    while(dic>> sub){
 
       if(isSubstring(sub, inputtedWord)){
 
-
-         wds<< sub<< '\n';
+         wds<< sub<< '\n';                      // write in output file
       }
    }
-   dic.close();
+   
+   // file close
+   dic.close();                        
    wds.close();
 }
 
@@ -47,15 +55,15 @@ bool isSubstring( string &dictionaryWord, string &inputtedWord ){
       int j;
       for (j = 0; j < dictionaryWord.size(); j++) {
          
-         if (inputtedWord[i + j] != dictionaryWord[j]) {
+         if (inputtedWord[i + j] != dictionaryWord[j]) {          // incorrect subString
             
             break;
          }
       }
       if (j == dictionaryWord.size()) {
       
-         return true; // Return true if the entire dictionaryWord is found in inputtedWord
+         return true;
       }
    }
-   return false; // If the loop completes without finding the word
+   return false;
 }
