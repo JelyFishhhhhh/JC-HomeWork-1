@@ -33,12 +33,12 @@ void embeddedWords( string &dictionaryWord, string &inputtedWord ){
       return;
    }
    ofstream wds("./Words.txt", ios::out);       // output file
-   string sub;                                  // for buffer
-   while(dic>> sub){
+   // read file
+   while(dic>> dictionaryWord){                            // end of file
 
-      if(isSubstring(sub, inputtedWord)){
+      if(isSubstring(dictionaryWord, inputtedWord)){
 
-         wds<< sub<< '\n';                      // write in output file
+         wds<< dictionaryWord<< '\n';                      // write in output file
       }
    }
    
@@ -50,9 +50,9 @@ void embeddedWords( string &dictionaryWord, string &inputtedWord ){
 // returns true if and only if dictionaryWord is a substring of inputtedWord
 bool isSubstring( string &dictionaryWord, string &inputtedWord ){
 
-   for (int i = 0; i <= inputtedWord.size() - dictionaryWord.size(); i++) {
+   int j= 0;
+   for (int i = 0; i <= inputtedWord.size() - dictionaryWord.size() && (i+ j)< inputtedWord.size(); i++) {
       
-      int j;
       for (j = 0; j < dictionaryWord.size(); j++) {
          
          if (inputtedWord[i + j] != dictionaryWord[j]) {          // incorrect subString
