@@ -313,7 +313,7 @@ void Polynomial::computeQuotient( Polynomial dividend, Polynomial divisor )
 
     for (int i = this->degree; i >= 0; i--) {
 
-        this->terms[i] = remainder.terms[remainder.degree] / divisor.terms[divisor.degree];
+        this->terms[i] = remainder.terms[dividend.degree- this->degree+ i] / divisor.terms[divisor.degree];
         monomial.terms[i] = this->terms[i];
         monomial.degree = i;
         buffer.degree = divisor.degree + monomial.degree;
@@ -369,7 +369,7 @@ void Polynomial::computeRemainder( Polynomial dividend, Polynomial divisor )
 
     for (int i = quotient.degree; i >= 0; i--) {
 
-        quotient.terms[i] = this->terms[this->degree] / divisor.terms[divisor.degree];
+        quotient.terms[i] = this->terms[dividend.degree- quotient.degree+ i] / divisor.terms[divisor.degree];
         monomial.terms[i] = quotient.terms[i];
         monomial.degree = i;
         buffer.degree = divisor.degree + monomial.degree;

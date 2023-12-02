@@ -51,7 +51,7 @@ void embeddedWords( string &dictionaryWord, string &inputtedWord ){
 bool isSubstring( string &dictionaryWord, string &inputtedWord ){
 
    int j= 0;
-   for (int i = 0; i <= inputtedWord.size() - dictionaryWord.size() && (i+ j)< inputtedWord.size(); i++) {
+   for (int i = 0; i <= inputtedWord.size() - dictionaryWord.size() && (i+j) < inputtedWord.size(); i++) {
       
       for (j = 0; j < dictionaryWord.size(); j++) {
          

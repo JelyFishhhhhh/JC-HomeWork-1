@@ -296,9 +296,11 @@ void division( Polynomial dividend, Polynomial divisor, Polynomial &quotient, Po
     buffer.degree = divisor.degree + quotient.degree;
     buffer.terms = new int[buffer.degree + 1]();
 
+        
     for (int i = quotient.degree; i >= 0; i--) {
         
-        quotient.terms[i] = (remainder.terms[remainder.degree] / divisor.terms[divisor.degree]);
+        
+        quotient.terms[i] = (remainder.terms[dividend.degree-quotient.degree+i] / divisor.terms[divisor.degree]); //modify
         monomial.terms[i] = quotient.terms[i];
         monomial.degree = i;
         buffer.degree = divisor.degree + monomial.degree;
