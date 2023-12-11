@@ -231,9 +231,6 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
             return true;
          }
       }
-
-      cout<< "Sorry, there is no suitable train for outbound time.\n";
-      return false;
    }
    
    // South Bound (trainNumber => odd)
@@ -261,11 +258,9 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
             return true;
          }
       }
-      cout<< "Sorry, there is no suitable train for outbound time.\n";
-      return false;
    }
    
-   // Same Station / Bad Request
+   // Same Station / else
 
    cout<< "Sorry, there is no suitable train for outbound time.\n";
    return false;
@@ -324,10 +319,11 @@ void inputContactInfo( Reservation &reservation )
    cout << "\nPhone No: ";
    cin >> reservation.phone;
 
-   for( int k = 0; k < 8; k++ )
-      reservation.reservationNumber[ k ] = rand() % 10 + '0';
-   reservation.reservationNumber[ 8 ] = '\0';
+   for( int k = 0; k < 8; k++ ){
 
+      reservation.reservationNumber[ k ] = rand() % 10 + '0';
+   }
+   reservation.reservationNumber[ 8 ] = '\0';
    cout << "\nReservation Number: " << reservation.reservationNumber << endl;
 }
 
@@ -336,13 +332,13 @@ void inputContactInfo( Reservation &reservation )
 void saveReservation( Reservation reservation )
 {
 
-   ofstream outFile("Reservation details.dat", ios::out | ios::binary);
+   ofstream outFile("Reservation details.dat", ios::app | ios::binary);
    
-   /*    Identification | Phone Num | Reservation Num     */
+   /*    Identification | Reservation Num | Phone Num     */
 
    outFile  << reservation.idNumber<<" "
-            << reservation.phone<< " "
-            << reservation.reservationNumber<< " ";
+            << reservation.reservationNumber<< " "
+            << reservation.phone<< " ";
 
    /*    Date | Train Num | From | To     */
 
@@ -363,7 +359,50 @@ void saveReservation( Reservation reservation )
 void reservationHistory( int numSouthboundTrains, int numNorthboundTrains )
 {
 
+   Reservation reservation;
+   ifstream inFile("Reservation details.dat", ios::in | ios::binary);
+   do
+   {
+      cout << "\nIdentification: \n";
+      cin >> reservation.idNumber;
 
+      cout << "\nReservation Number: \n";
+      cin >> reservation.reservationNumber;
+
+   } while( !existReservation( inFile, reservation ) );
+
+   cout << "\nDeparture Date: ";
+   cin >> reservation.date;
+
+   cout << "\nCar Class\n" << "1. Standard Car\n" << "2. Business Car";
+
+   do cout << "\n? ";
+   while( ( reservation.carClass = inputAnInteger( 1, 2 ) ) == -1 );
+
+   cout << "\nHow many adult tickets? ";
+   cin >> reservation.adultTickets;
+
+   cout << "\nHow many concession tickets? ";
+   cin >> reservation.concessionTickets;
+
+   if( reservation.originStation < reservation.destinationStation )
+      displayReservation( reservation, southboundTimetable, southboundStations );
+   else
+   {
+      reservation.originStation = 13 - reservation.originStation;
+      reservation.destinationStation = 13 - reservation.destinationStation;
+
+      displayReservation( reservation, northboundTimetable, northboundStations );
+
+      reservation.originStation = 13 - reservation.originStation;
+      reservation.destinationStation = 13 - reservation.destinationStation;
+   }
+
+   inputContactInfo( reservation );
+
+   cout << "\nReservation Completed!\n\n";
+
+   saveReservation( reservation );
 
 
 }
