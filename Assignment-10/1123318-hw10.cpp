@@ -215,7 +215,7 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
       // trainNumber pre-Filter
       if(atoi(reservation.trainNumber)% 2){
 
-         cout<< "Sorry, there is no suitable train for outbound time.\n";
+         cout<< "\nSorry, there is no suitable train for outbound time.\n";
          return false;
       }
 
@@ -241,7 +241,7 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
 
       if(!(atoi(reservation.trainNumber)% 2)){
 
-         cout<< "Sorry, there is no suitable train for outbound time.\n";
+         cout<< "\nSorry, there is no suitable train for outbound time.\n";
          return false;
       }
 
@@ -262,7 +262,7 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
    
    // Same Station / else
 
-   cout<< "Sorry, there is no suitable train for outbound time.\n";
+   cout<< "\nSorry, there is no suitable train for outbound time.\n";
    return false;
 }
 
@@ -332,7 +332,7 @@ void inputContactInfo( Reservation &reservation )
 void saveReservation( Reservation reservation )
 {
 
-   ofstream outFile("Reservation details.dat", ios::app | ios::binary);
+   fstream outFile("Reservation details.dat", ios::out | ios::binary);
    
    /*    Identification | Reservation Num | Phone Num     */
 
@@ -360,50 +360,17 @@ void reservationHistory( int numSouthboundTrains, int numNorthboundTrains )
 {
 
    Reservation reservation;
-   ifstream inFile("Reservation details.dat", ios::in | ios::binary);
-   do
-   {
-      cout << "\nIdentification: \n";
-      cin >> reservation.idNumber;
+   fstream inFile("Reservation details.dat", ios::in | ios::binary);
+   while( !existReservation( inFile, reservation ) );
 
-      cout << "\nReservation Number: \n";
-      cin >> reservation.reservationNumber;
+   if( reservation.originStation < reservation.destinationStation ){
 
-   } while( !existReservation( inFile, reservation ) );
-
-   cout << "\nDeparture Date: ";
-   cin >> reservation.date;
-
-   cout << "\nCar Class\n" << "1. Standard Car\n" << "2. Business Car";
-
-   do cout << "\n? ";
-   while( ( reservation.carClass = inputAnInteger( 1, 2 ) ) == -1 );
-
-   cout << "\nHow many adult tickets? ";
-   cin >> reservation.adultTickets;
-
-   cout << "\nHow many concession tickets? ";
-   cin >> reservation.concessionTickets;
-
-   if( reservation.originStation < reservation.destinationStation )
-      displayReservation( reservation, southboundTimetable, southboundStations );
-   else
-   {
-      reservation.originStation = 13 - reservation.originStation;
-      reservation.destinationStation = 13 - reservation.destinationStation;
-
-      displayReservation( reservation, northboundTimetable, northboundStations );
-
-      reservation.originStation = 13 - reservation.originStation;
-      reservation.destinationStation = 13 - reservation.destinationStation;
+      displayReservations( reservation, numSouthboundTrains, numNorthboundTrains );
    }
-
-   inputContactInfo( reservation );
-
-   cout << "\nReservation Completed!\n\n";
-
-   saveReservation( reservation );
-
+   else{
+      
+      displayReservations( reservation, numSouthboundTrains, numNorthboundTrains );
+   }
 
 }
 
@@ -419,9 +386,23 @@ bool existReservation( fstream &ioFile, Reservation &reservation )
    char reservationNumber[ 12 ];
    cin >> reservationNumber;
 
+   while(ioFile>> reservation.idNumber){
 
-   
+      ioFile>> reservation.reservationNumber>> reservation.phone
+            >> reservation.date>> reservation.trainNumber>> reservation.originStation>> reservation.destinationStation
+            >> reservation.adultTickets>> reservation.concessionTickets>> reservation.carClass;
 
+      if(atoi(reservation.idNumber) != atoi(idNumber)){
+
+         continue;
+      }
+      if(atoi(reservation.reservationNumber) == atoi(reservationNumber)){
+
+         return true;
+      }
+   }
+   cout<< "\nReservation record does not exist or cannot be found in this system.\n";
+   return false;
 }
 
 void displayReservations( Reservation reservation, int numSouthboundTrains, int numNorthboundTrains )
@@ -433,9 +414,13 @@ void displayReservations( Reservation reservation, int numSouthboundTrains, int 
    else
    {
 
+      reservation.originStation = 13 - reservation.originStation;
+      reservation.destinationStation = 13 - reservation.destinationStation;
 
+      displayReservation( reservation, northboundTimetable, northboundStations );
 
-
+      reservation.originStation = 13 - reservation.originStation;
+      reservation.destinationStation = 13 - reservation.destinationStation;
    }
 }
 
@@ -444,7 +429,72 @@ void displayReservations( Reservation reservation, int numSouthboundTrains, int 
 void displayReservation( Reservation reservation, Train trainTimetable[ 100 ], char stations[ 13 ][ 12 ] )
 {
 
+   // print title
 
+   cout<< "\nTrip Details\n";
 
+   // print thead
 
+   cout  << right
+         << setw(10)<< "Date"
+         << setw(11)<< "Train No."
+         << setw(9)<< "From"
+         << setw(10)<< "To"
+         << setw(11)<< "Departure"
+         << setw(9)<< "Arrival"
+         << setw(8)<< "Adult"
+         << setw(12)<< "Concession"
+         << setw(6)<< "Fare"
+         << setw(10)<< "Class"
+         << '\n';
+
+   // print tbody
+   
+   cout  << right
+         << setw(10)<< reservation.date
+         << setw(11)<< reservation.trainNumber
+         << setw(9)<< stations[reservation.originStation]
+         << setw(10)<< stations[reservation.destinationStation];
+   
+   for(int i= 1; i< 100; i++){
+
+      if(atoi(trainTimetable[i].trainNumber) != atoi(reservation.trainNumber)){
+
+         continue;
+      }
+      
+      cout<< setw(11)<< trainTimetable[i].departureTimes[reservation.originStation];
+      cout<< setw(9)<< trainTimetable[i].departureTimes[reservation.destinationStation];
+      break;
+   }
+
+   if(reservation.carClass == 1){
+      
+      cout  << setw(5)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]
+            <<"*"
+            << setw(2)<<   reservation.adultTickets
+            << setw(8)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2
+            << "*"
+            << setw(3)<<   reservation.concessionTickets;
+      
+      cout  << setw(6)<<   (reservation.adultTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation]) + 
+                           (reservation.concessionTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2);
+   }
+
+   else{
+
+      cout  << setw(5)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]
+            << "*"
+            << setw(2)<<   reservation.adultTickets
+            << setw(8)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2
+            << "*"
+            << setw(3)<<   reservation.concessionTickets;
+      
+      cout  << setw(6)<<   (reservation.adultTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation]) + 
+                           (reservation.concessionTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2);
+   }
+
+   cout<< setw(10)<< (reservation.carClass== 1? "Standard": "Business");
+
+   cout<< '\n';
 }
