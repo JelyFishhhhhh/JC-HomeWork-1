@@ -215,7 +215,7 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
       // trainNumber pre-Filter
       if(atoi(reservation.trainNumber)% 2){
 
-         cout<< "\nSorry, there is no suitable train for outbound time.\n";
+         cout<< "\nSorry, there is no suitable train for outbound time.\n\n";
          return false;
       }
 
@@ -241,7 +241,7 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
 
       if(!(atoi(reservation.trainNumber)% 2)){
 
-         cout<< "\nSorry, there is no suitable train for outbound time.\n";
+         cout<< "\nSorry, there is no suitable train for outbound time.\n\n";
          return false;
       }
 
@@ -262,7 +262,7 @@ bool suitable( Reservation &reservation, int numSouthboundTrains, int numNorthbo
    
    // Same Station / else
 
-   cout<< "\nSorry, there is no suitable train for outbound time.\n";
+   cout<< "\nSorry, there is no suitable train for outbound time.\n\n";
    return false;
 }
 
@@ -368,7 +368,7 @@ void reservationHistory( int numSouthboundTrains, int numNorthboundTrains )
       displayReservations( reservation, numSouthboundTrains, numNorthboundTrains );
    }
    else{
-      
+
       displayReservations( reservation, numSouthboundTrains, numNorthboundTrains );
    }
 
