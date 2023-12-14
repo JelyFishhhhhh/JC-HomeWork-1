@@ -134,3 +134,4 @@ config.json
 results/
 .vscode/
 *exe
+*.dat
