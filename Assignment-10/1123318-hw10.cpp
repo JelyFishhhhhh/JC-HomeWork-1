@@ -272,6 +272,8 @@ void loadSouthboundTimetable( int &numSouthboundTrains )
 
    numSouthboundTrains= 1;
    ifstream inFile("Southbound timetable.txt", ios::in);
+   inFile.clear();
+   inFile.seekg(0, ios::beg);
    if(!inFile){
 
       cout<< "Error: File Cannot be Opened.\n";
@@ -293,6 +295,8 @@ void loadNorthboundTimetable( int &numNorthboundTrains )
 
    numNorthboundTrains= 1;
    ifstream inFile("Northbound timetable.txt", ios::in);
+   inFile.clear();
+   inFile.seekg(0, ios::beg);
    if(!inFile){
 
       cout<< "Error: File Cannot be Opened.\n";
@@ -332,7 +336,9 @@ void inputContactInfo( Reservation &reservation )
 void saveReservation( Reservation reservation )
 {
 
-   fstream outFile("Reservation details.dat", ios::out | ios::binary);
+   fstream outFile("Reservation details.dat", ios::in | ios::out | ios::binary);
+   outFile.clear();
+   outFile.seekp(0, ios::end);
    
    /*    Identification | Reservation Num | Phone Num     */
 
@@ -360,18 +366,21 @@ void reservationHistory( int numSouthboundTrains, int numNorthboundTrains )
 {
 
    Reservation reservation;
-   fstream inFile("Reservation details.dat", ios::in | ios::binary);
+   fstream inFile("Reservation details.dat", ios::in | ios::out | ios::binary);
+   
    while( !existReservation( inFile, reservation ) );
 
    if( reservation.originStation < reservation.destinationStation ){
 
       displayReservations( reservation, numSouthboundTrains, numNorthboundTrains );
    }
+   
    else{
 
       displayReservations( reservation, numSouthboundTrains, numNorthboundTrains );
    }
-
+   
+   inFile.close();
 }
 
 // inputs idNumber and reservationNumber, and
@@ -385,6 +394,9 @@ bool existReservation( fstream &ioFile, Reservation &reservation )
    cout << "\nReservation Number: ";
    char reservationNumber[ 12 ];
    cin >> reservationNumber;
+
+   ioFile.clear();
+   ioFile.seekg(0, ios::beg);
 
    while(ioFile>> reservation.idNumber){
 

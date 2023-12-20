@@ -216,15 +216,25 @@ void minus( Polynomial &polynomial1, Polynomial polynomial2 )
 // addend += adder
 void addition( Polynomial &addend, Polynomial adder )
 {
-    addend.degree = (addend.degree > adder.degree ? addend.degree : adder.degree);
-    for (int i = 0; i <= addend.degree; i++) {
-
-        // addition
-        addend.terms[i] += (i<= adder.degree? adder.terms[i]: 0);
+    if (addend.degree > adder.degree) {
+        for (int i = 0; i <= addend.degree; i++)//modify
+            addend.terms[i] += (i <= adder.degree ? adder.terms[i] : 0);//modify
     }
+    else if (addend.degree < adder.degree) {
+        addend.degree = adder.degree;//add
+        for (int i = 0; i <= adder.degree; i++) {//modify
+            addend.terms[i] += (i <= adder.degree ? adder.terms[i] : 0);//modify
+        }
+    }
+    else {
+        for (int i = 0; i <= addend.degree; i++) {//modify
+            addend.terms[i] += (i <= adder.degree ? adder.terms[i] : 0);//modify
+        }
+    }
+    
+    
 
-    while (addend.degree > 0 && !addend.terms[addend.degree]) {
-
+    while (addend.degree > 0 && addend.terms[addend.degree] == 0) {
         addend.degree--;
     }
 
@@ -253,88 +263,68 @@ void subtraction( Polynomial &minuend, Polynomial subtrahend )
 void multiplication( Polynomial multiplicand, Polynomial multiplier, Polynomial &product )
 {
     product.degree = multiplicand.degree + multiplier.degree;
-    product.terms = new int[product.degree + 1]();
-
-    // multiplicand
+    product.terms = new int[product.degree + 1]();//added
     for (int ix = 0; ix <= multiplicand.degree; ix++) {
-
         for (int iy = 0; iy <= multiplier.degree; iy++) {
-
-            product.terms[ix + iy] += multiplicand.terms[ix] * multiplier.terms[iy];      // modify
+            product.terms[ix + iy] += multiplicand.terms[ix] * multiplier.terms[iy];
         }
     }
-
-    while (!product.terms[product.degree] && product.degree > 0) {
-
+    while (product.degree > 0 && product.terms[product.degree] == 0) {
         product.degree--;
     }
 
    if( product.degree != 0 && product.terms[ product.degree ] == 0 )
       cout << "Leading coefficient of product cannot be zero!\n";
-
 }
 
 // quotient = dividend / divisor; remainder = dividend % divisor
 // provided that dividend.degree >= divisor.degree
 void division( Polynomial dividend, Polynomial divisor, Polynomial &quotient, Polynomial &remainder )
 {
-    // init
-    quotient.degree = dividend.degree - divisor.degree;
-    quotient.terms = new int[quotient.degree + 1]();
-    remainder.degree = dividend.degree;
-    remainder.terms = new int[remainder.degree + 1]();
+    remainder.degree = dividend.degree;//add
+    quotient.degree = dividend.degree - divisor.degree;//add
+    remainder.terms = new int[dividend.degree + 1]();//add
+    quotient.terms = new int[quotient.degree + 1]();//add
 
-    // dividend-> remainder
-    for (int i = 0; i <= remainder.degree; i++) {
-
+    //add start
+    for (int i = 0; i <= dividend.degree; i++) {
         remainder.terms[i] = dividend.terms[i];
-    }
+    }//add end
 
-    Polynomial monomial;
     Polynomial buffer;
-    monomial.degree= quotient.degree;
-    monomial.terms = new int[quotient.degree + 1]();
-    buffer.degree = divisor.degree + quotient.degree;
-    buffer.terms = new int[buffer.degree + 1]();
+    Polynomial monomial;
+    buffer.degree = remainder.degree;
+    monomial.degree = remainder.degree - divisor.degree;
+    buffer.terms = new int [buffer.degree + 1]();//modify
+    monomial.terms = new int [monomial.degree + 1]();//modify
+    if (dividend.degree >= divisor.degree) {
+        for (int ix = dividend.degree; ix >= divisor.degree; ix--) {//modify
+            quotient.terms[ix - divisor.degree] = remainder.terms[ix] / divisor.terms[divisor.degree];
+            monomial.terms[ix - divisor.degree] = quotient.terms[ix - divisor.degree];
+            monomial.degree = ix - divisor.degree; //add
+            buffer.degree = divisor.degree + monomial.degree; //add
+            multiplication(monomial, divisor, buffer);
+            subtraction(remainder, buffer);
 
-     
-    for (int i = quotient.degree; i >= 0; i--) {
-        
-        quotient.terms[i] = (remainder.terms[divisor.degree+ i] / divisor.terms[divisor.degree]); //modify
-        monomial.terms[i] = quotient.terms[i];
-        monomial.degree = i;
-        buffer.degree = divisor.degree + monomial.degree;
-        multiplication(divisor, monomial, buffer);
-        subtraction(remainder, buffer);
-        for (int j = monomial.degree; j >= 0; j--) {
-
-            monomial.terms[j] = 0;
-        }
-        for (int j = buffer.degree; j >= 0; j--) {
-
-            buffer.terms[j] = 0;
+            for (int m = 0; m <= monomial.degree; m++) { //add start
+                monomial.terms[m] = 0;
+            }//add end
         }
     }
-
-    // release
-   delete[] monomial.terms;
-   delete[] buffer.terms;
-
-    while (!quotient.terms[quotient.degree] && quotient.degree > 0) {
-
+    delete[] buffer.terms;
+    delete[] monomial.terms;
+ /*
+    while (quotient.degree > 0 && quotient.terms[quotient.degree] == 0 ) {
         quotient.degree--;
     }
-    while (!remainder.terms[remainder.degree] && remainder.degree > 0) {
 
+    while (remainder.degree > 0 && remainder.terms[quotient.degree] == 0) {
         remainder.degree--;
-    }
-   
-    
-
+    }    delet
+*/
    if( quotient.degree != 0 && quotient.terms[ quotient.degree ] == 0 )
       cout << "Leading coefficient of quotient cannot be zero!\n";
 
    if( remainder.degree != 0 && remainder.terms[ remainder.degree ] == 0 )
       cout << "Leading coefficient of remainder cannot be zero!\n";
-
 }
