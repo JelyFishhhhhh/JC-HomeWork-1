@@ -195,7 +195,7 @@ void loadReservations( vector< Reservation > &reservations )
 void saveReservations( vector< Reservation > &reservations )
 {
 
-   ofstream outFile("Reservation details.dat", ios::in | ios::binary);
+   ofstream outFile("Reservation details.dat", ios::out | ios::binary);
    outFile.clear();
    outFile.seekp(0, ios::beg);
    for(int i= 0; i< reservations.size(); i++){
@@ -349,7 +349,7 @@ void selectTrain( Reservation &reservation, int departureTime, vector< Train > &
       }
    }
 
-   strcpy(reservation.trainNumber, trainNo);
+   strcpy_s(reservation.trainNumber, trainNo);
    displayReservation( reservation, timetable, stations );
 }
 
@@ -495,22 +495,46 @@ void displayReservation( Reservation reservation, vector< Train > &timetable, ch
             << setw(9)<< timetable[i].departureTimes[reservation.destinationStation];
       break;
    }
+   if(reservation.direction== 1){
 
-   if(reservation.carClass == 1){
+      if(reservation.carClass == 1){
 
-      cout  << setw(5)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]<< "*"<< setw(2)<< reservation.adultTickets
-            << setw(8)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2<< "*"<< setw(3)<< reservation.concessionTickets
+         cout  << setw(5)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]<< "*"<< setw(2)<< reservation.adultTickets
+               << setw(8)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2<< "*"<< setw(3)<< reservation.concessionTickets
 
-            << setw(8)<<   (reservation.adultTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation])+ 
-                           (reservation.concessionTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2);
+               << setw(8)<<   (reservation.adultTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation])+ 
+                              (reservation.concessionTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2);
 
+      }
+      else{
+         cout  << setw(5)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]<< "*"<< setw(2)<< reservation.adultTickets
+               << setw(8)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2<< "*"<< setw(3)<< reservation.concessionTickets
+
+               << setw(8)<<   (reservation.adultTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation])+ 
+                              (reservation.concessionTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2);
+      }
    }
    else{
-      cout  << setw(5)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]<< "*"<< setw(2)<< reservation.adultTickets
-            << setw(8)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2<< "*"<< setw(3)<< reservation.concessionTickets
+      reservation.destinationStation= 13- reservation.destinationStation;
+      reservation.originStation= 13- reservation.originStation;
+      if(reservation.carClass == 2){
 
-            << setw(8)<<   (reservation.adultTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation])+ 
-                           (reservation.concessionTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2);
+         cout  << setw(5)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]<< "*"<< setw(2)<< reservation.adultTickets
+               << setw(8)<<   adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2<< "*"<< setw(3)<< reservation.concessionTickets
+
+               << setw(8)<<   (reservation.adultTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation])+ 
+                              (reservation.concessionTickets* adultTicketPrice[reservation.destinationStation][reservation.originStation]/ 2);
+
+      }
+      else{
+         cout  << setw(5)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]<< "*"<< setw(2)<< reservation.adultTickets
+               << setw(8)<<   adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2<< "*"<< setw(3)<< reservation.concessionTickets
+
+               << setw(8)<<   (reservation.adultTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation])+ 
+                              (reservation.concessionTickets* adultTicketPrice[reservation.originStation][reservation.destinationStation]/ 2);
+      }
+      reservation.destinationStation= 13- reservation.destinationStation;
+      reservation.originStation= 13- reservation.originStation;
    }
 
    cout<< setw(12)<< (reservation.carClass== 1? "Standard": "Business");
